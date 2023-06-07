@@ -142,42 +142,42 @@ public class VoiceTypingApp {
 //        }
 //    }
 
-    public static void resetLily() {
-        // Perform Alt+Tab
-        try {
-            commandsRunning = true;
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_WINDOWS);
-            robot.keyPress(KeyEvent.VK_T);
-            robot.keyRelease(KeyEvent.VK_WINDOWS);
-            robot.keyRelease(KeyEvent.VK_T);
+//    public static void resetLily() {
+//        // Perform Alt+Tab
+//        try {
+//            commandsRunning = true;
+//            Robot robot = new Robot();
+//            robot.keyPress(KeyEvent.VK_WINDOWS);
+//            robot.keyPress(KeyEvent.VK_T);
+//            robot.keyRelease(KeyEvent.VK_WINDOWS);
+//            robot.keyRelease(KeyEvent.VK_T);
+//
+//            // Delay for a short interval to allow Alt+Tab to take effect
+//            robot.delay(100);
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-            // Delay for a short interval to allow Alt+Tab to take effect
-            robot.delay(100);
+
+    public static void resetLilly(int t) {
+        try {
+            Robot robot = new Robot();
+            robot.delay(500);
+
+            for (int i = 0; i < t; i++) {
+                commandsRunning = true;
+                robot.keyPress(KeyEvent.VK_WINDOWS);
+                robot.keyPress(KeyEvent.VK_T);
+                robot.keyRelease(KeyEvent.VK_T);
+                robot.keyRelease(KeyEvent.VK_WINDOWS);
+                robot.delay(700);
+            }
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
-
-//    private static void pressWindowsHShortcut(int t) {
-//        try {
-//            Robot robot = new Robot();
-//            robot.delay(500);
-//
-//            for (int i = 0; i < t; i++) {
-//                commandsRunning = true;
-//                robot.keyPress(KeyEvent.VK_WINDOWS);
-//                robot.keyPress(KeyEvent.VK_H);
-//                robot.keyRelease(KeyEvent.VK_H);
-//                robot.keyRelease(KeyEvent.VK_WINDOWS);
-//                robot.delay(300);
-//            }
-//        } catch (AWTException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
 
     private static void runQuery(String query) {
         pressKeysFromVoiceInput(query);
@@ -241,6 +241,20 @@ public class VoiceTypingApp {
         return keyMap;
     }
 
+    private static void pressBackspace(int times) {
+        try {
+            Robot robot = new Robot();
+            for (int i = 0; i < times; i++) {
+                robot.keyPress(KeyEvent.VK_BACK_SPACE);
+                robot.keyRelease(KeyEvent.VK_BACK_SPACE);
+                robot.delay(20);  // adjust delay as needed
+            }
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private static void pressKeysFromVoiceInput(String voiceInput) {
         System.out.println("Current voice input " + voiceInput);
         // Split the voice input based on "shortcut" and "insert"
@@ -275,9 +289,12 @@ public class VoiceTypingApp {
 //            clearTimer.stop();
 //          Execute the "command" commands without performing Alt+Tab
             commandsRunning = true;
+            int totalCommandLength = 0;
             for (String command : commandCommands) {
                 System.out.println("Current command: " + command);
+                totalCommandLength += command.length();
                 String keysString = command.substring("command ".length());
+                pressBackspace(totalCommandLength);
                 pressKeys(keysString);
             }
         } else {

@@ -52,8 +52,8 @@ public class KeyboardMouseListener implements NativeMouseInputListener, NativeKe
             if (typedTextString.contains("command") || typedTextString.contains("shortcut") || typedTextString.contains("insert")) {
                 System.out.println(typedTextString);
                 sendQuery.accept(typedTextString);
+                VoiceTypingApp.resetLilly(2);
             }
-            VoiceTypingApp.resetLily();
 //            System.out.println("check");
             typedText =  new StringBuilder();
         }
@@ -68,7 +68,7 @@ public class KeyboardMouseListener implements NativeMouseInputListener, NativeKe
 //                isMouseInactivityTimerRunning = false;
 //            }
 //        }
-//    }); The electromagnetic waves command controls dash
+//    }); This is quite a good thing command control /
 
     KeyboardMouseListener(Consumer<String> sendQuery) {
 //        mouseInactivityTimer.setRepeats(false);
@@ -84,9 +84,8 @@ public class KeyboardMouseListener implements NativeMouseInputListener, NativeKe
     }
 
     private void detectQuery(NativeKeyEvent e) {
-        checkTimer.restart();
-        if (!VoiceTypingApp.commandsRunning && NativeKeyEvent.getKeyText(e.getKeyCode()).toLowerCase() != "space"){
-//            if (!keyboardInactivityTimer.isRunning()){
+        if (!VoiceTypingApp.commandsRunning ){
+//            if (!keyboardInactivityTimer.isRunning()){These are electromagnetic waves control command control /
 //                Robot robot = null;
 //                try {
 //                    robot = new Robot();
@@ -96,16 +95,83 @@ public class KeyboardMouseListener implements NativeMouseInputListener, NativeKe
 //                robot.delay(300); // to avoid pressing unintentional shortcuts due to alt tab running in background
 //            }
 //            keyboardInactivityTimer.restart();
-            char keyChar = NativeKeyEvent.getKeyText(e.getKeyCode()).charAt(0);
-            System.out.println(NativeKeyEvent.getKeyText(e.getKeyCode()).toLowerCase());
+            checkTimer.restart();
+            String keyChar;
+            switch (e.getKeyCode()) {
+                case NativeKeyEvent.VC_SLASH:
+                    keyChar = "/";
+                    break;
+                case NativeKeyEvent.VC_BACKSPACE:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_ENTER:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_SPACE:
+                    keyChar = " ";
+                    break;
+                case NativeKeyEvent.VC_TAB:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_ESCAPE:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_CAPS_LOCK:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_SHIFT:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_CONTROL:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_META:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_ALT:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_UP:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_DOWN:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_LEFT:
+                    keyChar = "";
+                    break;
+                case NativeKeyEvent.VC_RIGHT:
+                    keyChar = "";
+                    break;
+                // Handle function keys
+                case NativeKeyEvent.VC_F1:
+                case NativeKeyEvent.VC_F2:
+                case NativeKeyEvent.VC_F3:
+                case NativeKeyEvent.VC_F4:
+                case NativeKeyEvent.VC_F5:
+                case NativeKeyEvent.VC_F6:
+                case NativeKeyEvent.VC_F7:
+                case NativeKeyEvent.VC_F8:
+                case NativeKeyEvent.VC_F9:
+                case NativeKeyEvent.VC_F10:
+                case NativeKeyEvent.VC_F11:
+                case NativeKeyEvent.VC_F12:
+                    keyChar = "f" + (e.getKeyCode() - NativeKeyEvent.VC_F1 + 1);
+                    break;
+                default:
+                    keyChar = String.valueOf(NativeKeyEvent.getKeyText(e.getKeyCode()).charAt(0));
+                    break;
+            }
+
             typedText.append(keyChar);
+
         }else {
             commandsRunningTimer.restart();
         }
 
     }
 
-//    public void nativeKeyReleased(NativeKeyEvent e) {
+//    public void nativeKeyReleased(NativeKeyEvent e) {This is electromagnetic wave control command control /
 //        keyboardActive();
 //    }
 //
