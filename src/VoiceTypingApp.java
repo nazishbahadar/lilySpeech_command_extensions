@@ -16,167 +16,172 @@ public class VoiceTypingApp {
     private static final Map<String, Integer> KEY_MAP = createKeyMap();
     public static volatile boolean commandsRunning = false;
     private static volatile KeyboardMouseListener keyboardMouseListener;
-    private static volatile boolean isWorking = false;
-    private static volatile boolean preventClearTimerRestart = false;
-    private static Timer mouseInactivityTimer;
-    static Timer clearTimer;
+//    private static volatile boolean isWorking = false;
+//    private static volatile boolean preventClearTimerRestart = false;
+//    private static Timer mouseInactivityTimer;
+//    static Timer clearTimer;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Voice Typing App");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new JFrame("Voice Typing App");
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            // Set the position and size of the window
+//            int x = 697; // x-coordinate of the top-left corner
+//            int y = 30; // y-coordinate of the top-left corner
+//            int width = 300; // width of the window
+//            int height = 90; // height of the window
+//            frame.setBounds(x, y, width, height);
+//
+//            JPanel panel = new JPanel();
+//            frame.add(panel);
+//            panel.setLayout(new BorderLayout());
+//
+//            JTextField textField = new JTextField();
+//            panel.add(textField, BorderLayout.CENTER);
+//
+//
+//            clearTimer = new Timer(2000, new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    String voiceInput = textField.getText().toLowerCase();
+//
+//                    if (voiceInput.contains("shortcut") || voiceInput.contains("insert") || voiceInput.contains("command")) {
+//                        if (!preventClearTimerRestart) {
+//                            pressKeysFromVoiceInput(voiceInput, textField);
+//                            Timer refocusTimer = new Timer(700, new ActionListener() {
+//                                @Override
+//                                public void actionPerformed(ActionEvent e) {
+//                                    if (!isWorking) {
+//                                        textField.requestFocus();
+//                                        pressWindowsHShortcut(2);
+//                                    }
+//                                    commandsRunning = false;
+//                                }
+//                            });
+//                            refocusTimer.setRepeats(false);
+//                            refocusTimer.start();
+//                        } else {
+//                            preventClearTimerRestart = false;
+//                        }
+//                    }
+//
+//                }
+//            });
+//            clearTimer.setRepeats(false);
+//
+//            textField.getDocument().addDocumentListener(new DocumentListener() {
+//                @Override
+//                public void insertUpdate(DocumentEvent e) {
+//                    processTextChange();
+//                }
+//
+//                @Override
+//                public void removeUpdate(DocumentEvent e) {
+//                    processTextChange();
+//                }
+//
+//                @Override
+//                public void changedUpdate(DocumentEvent e) {
+//                    processTextChange();
+//                }
+//
+//                private void processTextChange() {
+//                    clearTimer.restart();
+//                }
+//            });
+//
+//            textField.addFocusListener(new FocusAdapter() {
+//                @Override
+//                public void focusLost(FocusEvent e) {
+//                    if (!commandsRunning && !isWorking) {
+//                        Timer refocusTimer = new Timer(2000, new ActionListener() {
+//                            @Override
+//                            public void actionPerformed(ActionEvent e) {
+//                                if (!isWorking){
+//                                    textField.requestFocus();
+//                                    pressWindowsHShortcut(2);
+//                                }
+//                            }
+//                        });
+//                        refocusTimer.setRepeats(false);
+//                        refocusTimer.start();
+//                    }
+//                }
+//            });
+//
+//            frame.setVisible(true);
+        KeyboardMouseListener.register();
+        keyboardMouseListener = new KeyboardMouseListener(VoiceTypingApp::runQuery);
+        GlobalScreen.addNativeMouseListener(keyboardMouseListener);
+        GlobalScreen.addNativeMouseMotionListener(keyboardMouseListener);
+        GlobalScreen.addNativeKeyListener(keyboardMouseListener);
+        GlobalScreen.addNativeMouseWheelListener(keyboardMouseListener);
 
-            // Set the position and size of the window
-            int x = 697; // x-coordinate of the top-left corner
-            int y = 30; // y-coordinate of the top-left corner
-            int width = 300; // width of the window
-            int height = 90; // height of the window
-            frame.setBounds(x, y, width, height);
-
-            JPanel panel = new JPanel();
-            frame.add(panel);
-            panel.setLayout(new BorderLayout());
-
-            JTextField textField = new JTextField();
-            panel.add(textField, BorderLayout.CENTER);
-
-
-            clearTimer = new Timer(2000, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String voiceInput = textField.getText().toLowerCase();
-
-                    if (voiceInput.contains("shortcut") || voiceInput.contains("insert") || voiceInput.contains("command")) {
-                        if (!preventClearTimerRestart) {
-                            pressKeysFromVoiceInput(voiceInput, textField);
-                            Timer refocusTimer = new Timer(700, new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    if (!isWorking) {
-                                        textField.requestFocus();
-                                        pressWindowsHShortcut(2);
-                                    }
-                                    commandsRunning = false;
-                                }
-                            });
-                            refocusTimer.setRepeats(false);
-                            refocusTimer.start();
-                        } else {
-                            preventClearTimerRestart = false;
-                        }
-                    }
-
-                }
-            });
-            clearTimer.setRepeats(false);
-
-            textField.getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    processTextChange();
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    processTextChange();
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    processTextChange();
-                }
-
-                private void processTextChange() {
-                    clearTimer.restart();
-                }
-            });
-
-            textField.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (!commandsRunning && !isWorking) {
-                        Timer refocusTimer = new Timer(2000, new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                if (!isWorking){
-                                    textField.requestFocus();
-                                    pressWindowsHShortcut(2);
-                                }
-                            }
-                        });
-                        refocusTimer.setRepeats(false);
-                        refocusTimer.start();
-                    }
-                }
-            });
-
-            frame.setVisible(true);
-
-            KeyboardMouseListener.register();
-            keyboardMouseListener = new KeyboardMouseListener(VoiceTypingApp::toggleIsWorking, textField);
-            GlobalScreen.addNativeMouseListener(keyboardMouseListener);
-            GlobalScreen.addNativeMouseMotionListener(keyboardMouseListener);
-            GlobalScreen.addNativeKeyListener(keyboardMouseListener);
-            GlobalScreen.addNativeMouseWheelListener(keyboardMouseListener);
-
-        });
-        pressWindowsHShortcut(1);
+//        });
+//        pressWindowsHShortcut(1);Electromagnetic propagate through space command control /
 
 
     }
 
 
-    private static void toggleIsWorking(boolean value, JTextField textField) {
-        if (isWorking == value) {
-            return;
-        }
-        System.out.println("isWorking: " + isWorking + ", commandsRunning: " + commandsRunning + ", value: " + value);
-        isWorking = value;
-        if (!isWorking && !commandsRunning) {
-            textField.requestFocus();
-            pressWindowsHShortcut(2);
-        }
-        if (isWorking) {
-            performAltTab();
-        }
-    }
 
-    private static void performAltTab() {
+
+//    private static void toggleIsWorking(boolean value, JTextField textField) {
+//        if (isWorking == value) {
+//            return;
+//        }
+//        System.out.println("isWorking: " + isWorking + ", commandsRunning: " + commandsRunning + ", value: " + value);
+//        isWorking = value;
+//        if (!isWorking && !commandsRunning) {
+//            textField.requestFocus();
+//            pressWindowsHShortcut(2);
+//        }
+//        if (isWorking) {
+//            performAltTab();
+//        }
+//    }
+
+    public static void resetLily() {
         // Perform Alt+Tab
         try {
             commandsRunning = true;
             Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_ALT);
-            robot.keyPress(KeyEvent.VK_TAB);
-            robot.keyRelease(KeyEvent.VK_TAB);
-            robot.keyRelease(KeyEvent.VK_ALT);
+            robot.keyPress(KeyEvent.VK_WINDOWS);
+            robot.keyPress(KeyEvent.VK_T);
+            robot.keyRelease(KeyEvent.VK_WINDOWS);
+            robot.keyRelease(KeyEvent.VK_T);
 
             // Delay for a short interval to allow Alt+Tab to take effect
-            robot.delay(500);
+            robot.delay(100);
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
 
-    private static void pressWindowsHShortcut(int t) {
-        try {
-            Robot robot = new Robot();
-            robot.delay(500);
+//    private static void pressWindowsHShortcut(int t) {
+//        try {
+//            Robot robot = new Robot();
+//            robot.delay(500);
+//
+//            for (int i = 0; i < t; i++) {
+//                commandsRunning = true;
+//                robot.keyPress(KeyEvent.VK_WINDOWS);
+//                robot.keyPress(KeyEvent.VK_H);
+//                robot.keyRelease(KeyEvent.VK_H);
+//                robot.keyRelease(KeyEvent.VK_WINDOWS);
+//                robot.delay(300);
+//            }
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
 
-            for (int i = 0; i < t; i++) {
-                commandsRunning = true;
-                robot.keyPress(KeyEvent.VK_WINDOWS);
-                robot.keyPress(KeyEvent.VK_H);
-                robot.keyRelease(KeyEvent.VK_H);
-                robot.keyRelease(KeyEvent.VK_WINDOWS);
-                robot.delay(300);
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+    private static void runQuery(String query) {
+        pressKeysFromVoiceInput(query);
     }
-
 
     private static Map<String, Integer> createKeyMap() {
         Map<String, Integer> keyMap = new HashMap<>();
@@ -236,8 +241,8 @@ public class VoiceTypingApp {
         return keyMap;
     }
 
-    private static void pressKeysFromVoiceInput(String voiceInput, JTextField textField) {
-        System.out.println("Current voice input " +voiceInput);
+    private static void pressKeysFromVoiceInput(String voiceInput) {
+        System.out.println("Current voice input " + voiceInput);
         // Split the voice input based on "shortcut" and "insert"
         List<String> commands = new ArrayList<>();
         Matcher matcher = Pattern.compile("((shortcut|insert|command).+?)(?=shortcut|insert|command|$)").matcher(voiceInput);
@@ -258,16 +263,16 @@ public class VoiceTypingApp {
             // Update the original voice input by removing the "command" commands
             if (commandCommands.contains("command stop")) {
                 String updatedVoiceInput = voiceInput.replace("command stop", "");
-                textField.setText(updatedVoiceInput);
-                clearTimer.stop();
+//                textField.setText(updatedVoiceInput);
+//                clearTimer.stop();
                 return;
             }
-            String updatedVoiceInput = String.join(" ", commands);
-            if (commands.size() > 0){
-                preventClearTimerRestart = true;
-            }
-            textField.setText(updatedVoiceInput);
-            clearTimer.stop();
+//            String updatedVoiceInput = String.join(" ", commands);
+//            if (commands.size() > 0){
+//                preventClearTimerRestart = true;
+//            }
+//            textField.setText(updatedVoiceInput);
+//            clearTimer.stop();
 //          Execute the "command" commands without performing Alt+Tab
             commandsRunning = true;
             for (String command : commandCommands) {
@@ -276,7 +281,7 @@ public class VoiceTypingApp {
                 pressKeys(keysString);
             }
         } else {
-            performAltTab();
+//            performAltTab();
             for (String command : commands) {
                 System.out.println("Current command: " + command);
                 if (command.startsWith("shortcut ")) {
@@ -287,7 +292,7 @@ public class VoiceTypingApp {
                     insertTextFromVoiceInput(textToInsert);
                 }
             }
-            textField.setText("");
+//            textField.setText("");
         }
 
     }
@@ -380,5 +385,6 @@ public class VoiceTypingApp {
             e.printStackTrace();
         }
     }
+
 }
 
