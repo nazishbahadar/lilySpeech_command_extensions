@@ -75,6 +75,7 @@ public class VoiceTypingApp {
             keyMap.put(Character.toString(letter), KeyEvent.getExtendedKeyCodeForChar(letter));
         }
 
+
         // Add mappings for numbers
         for (char number = '0'; number <= '9'; number++) {
             keyMap.put(Character.toString(number), KeyEvent.getExtendedKeyCodeForChar(number));
