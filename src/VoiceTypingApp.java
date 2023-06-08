@@ -1,26 +1,21 @@
 import com.github.kwhat.jnativehook.GlobalScreen;
 
-import javax.swing.*;
-import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-
+import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VoiceTypingApp {
     private static final Map<String, Integer> KEY_MAP = createKeyMap();
     public static volatile boolean commandsRunning = false;
-    private static volatile KeyboardMouseListener keyboardMouseListener;
+    private static volatile KeyboardListener keyboardMouseListener;
 
 
     public static void main(String[] args) {
-        KeyboardMouseListener.register();
-        keyboardMouseListener = new KeyboardMouseListener(VoiceTypingApp::runQuery);
+        KeyboardListener.register();
+        keyboardMouseListener = new KeyboardListener(VoiceTypingApp::runQuery);
         GlobalScreen.addNativeKeyListener(keyboardMouseListener);
     }
 
@@ -133,34 +128,24 @@ public class VoiceTypingApp {
         int totalCommandLength = 0;
         for (String command : commands) {
             totalCommandLength += command.length();
-//            System.out.println(command + command.length());
         }
-
-        // Separate the commands that start with "command"
-        List<String> commandCommands = new ArrayList<>();
-        for (Iterator<String> iterator = commands.iterator(); iterator.hasNext();) {
-            String command = iterator.next();
-            if (command.startsWith("command ")) {
-                commandCommands.add(command);
-                iterator.remove();
-            }
-        }
-
+        totalCommandLength += commands.size() - 1;
         pressBackspace(totalCommandLength);
-            for (String command : commands) {
+
+
+        for (String command : commands) {
+            if (command.startsWith("shortcut ")) {
+                String keysString = command.substring("shortcut ".length());
+                pressKeys(keysString);
+            } else if (command.startsWith("insert ")) {
+                String textToInsert = command.substring("insert ".length());
+                insertTextFromVoiceInput(textToInsert);
+            } else if (command.startsWith("command ")) {
                 System.out.println("Current command: " + command);
-                if (command.startsWith("shortcut ")) {
-                    String keysString = command.substring("shortcut ".length());
-                    pressKeys(keysString);
-                } else if (command.startsWith("insert ")) {
-                    String textToInsert = command.substring("insert ".length());
-                    insertTextFromVoiceInput(textToInsert);
-                } else if (command.startsWith("command ")) {
-                    System.out.println("Current command: " + command);
-                    String keysString = command.substring("command ".length());
-                    pressKeys(keysString);
-                }
+                String keysString = command.substring("command ".length());
+                pressKeys(keysString);
             }
+        }
     }
 
     private static void insertTextFromVoiceInput(String textToInsert) {
