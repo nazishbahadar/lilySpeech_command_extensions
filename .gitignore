@@ -1,5 +1,7 @@
-# Ignore everything except the specified directory
+# Ignore everything except the specified directory and .gitignore file
 /*
+!/.gitignore
+!/pom.xml
 !/src
 /src/*
 !/src/**

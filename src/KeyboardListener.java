@@ -21,7 +21,7 @@ public class KeyboardListener implements NativeKeyListener {
         }
     });
 
-    private final Timer checkTimer = new Timer(700, new ActionListener() {
+    private final Timer checkTimer = new Timer(500, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             String typedTextString = typedText.toString().toLowerCase();
